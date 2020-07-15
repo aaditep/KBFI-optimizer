@@ -1,22 +1,25 @@
-
 import numpy.matlib as mat
-from sphere import spherex
+#from sphere import spherex
 import numpy as np
-from rosenbrockmat import rosenbrock
+#from rosenbrockmat import rosenbrock
+#from shaffer import shaffer
+from kenny import kenny
+from rosenbrock import rosenbrock
+from Beale import beale
 # User inputid are: fitness function, lowerbound(lb),upperbound(ub), populatonsize(N_p)
 #number of iterations(T), scaling factor F, crossover probability(P_c)
 
 
 #problem settings
-lb = np.array([0,0,0,0,0])
-ub = np.array([10,10,10,10,10])
+lb = np.full(5,-4.5) #generates column of n bounds(nr. of rows, bound)
+ub = np.full(5,4.5)
 
 
 #Paramaters for Differential Evlution
 
 N_p = 5 #Number of population
-T = 100 #number of iterations
-P_c = 0.8 #crossover probability
+T = 1000 #number of iterations
+P_c = 0.5 #crossover probability
 F = 0.85 #scaling factor
 
 #Initializing DE
@@ -33,18 +36,18 @@ P = mat.repmat(lb,N_p,1)+mat.repmat((ub-lb),N_p,1)*np.random.rand(len(ub-lb),N_p
 
 #initial fitness function values to f as a vector
 for p in np.arange(N_p):
-    f[p]=spherex(P[p,])
+    f[p]=kenny(P[p,])
 print(f)
 
 
 
 #iteration loop
 for t in np.arange(T):
-    
+
     for i in np.arange(N_p):
         
         
-        
+        print(t)
         #MUTATION
         #candidates are assigned without the i-th element
         candidates= np.delete(np.arange(N_p), np.where(np.arange(N_p)==i))
@@ -72,22 +75,17 @@ for t in np.arange(T):
         U[j]=np.minimum(U[j], ub)
         U[j]=np.maximum(U[j], lb)
     
-        fu[j]=spherex(U[j])
+        fu[j]=kenny(U[j])
     
         if fu[j] < f[j]:
             P[j]= U[j]
             f[j]=fu[j]
  
-        
-        
-        
-        
-        
-        
-        
+
+
 
 print(f'Final iteration results for P:\n{ P}')
-print(f'Fitness function values{f}')
+print(f'Fitness function values \n{f}')
 best_of_f= min(f)
 print(f'Best fitness function value{best_of_f}')
 print(f'Best fitness value location/row {f.argmin()}')
